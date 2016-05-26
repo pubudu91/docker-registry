@@ -92,7 +92,7 @@ public class NameApiServiceImpl extends NameApiService {
     @Override
     public Response nameTagsListGet(String name, SecurityContext securityContext)
     throws NotFoundException {
-        StorageDriver driver = FileSystemStorageDriver.getInstance();
+        StorageDriver driver = FileSystemStorageDriver.getInstance(); // TODO: Set this to be taken from a config file
         List<File> tagFiles = driver.getDirectDescendants(Endpoint.TagsList, name);
         List<String> tags = new ArrayList<>();
 
