@@ -1,21 +1,17 @@
 package io.swagger.api.impl;
 
 import io.swagger.api.*;
-import io.swagger.model.*;
 
-import com.sun.jersey.multipart.FormDataParam;
-
-import io.swagger.model.InlineResponse401;
-import io.swagger.model.InlineResponse200;
 import io.swagger.model.InlineResponse2001;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import io.swagger.api.NotFoundException;
 
-import java.io.InputStream;
-
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
+import org.eclipse.dockerregistry.storage.StorageDriver;
+import org.eclipse.dockerregistry.storage.drivers.FileSystemStorageDriver;
+import org.eclipse.dockerregistry.utils.Endpoint;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
@@ -96,8 +92,18 @@ public class NameApiServiceImpl extends NameApiService {
     @Override
     public Response nameTagsListGet(String name, SecurityContext securityContext)
     throws NotFoundException {
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+        StorageDriver driver = FileSystemStorageDriver.getInstance();
+        List<File> tagFiles = driver.getDirectDescendants(Endpoint.TagsList, name);
+        List<String> tags = new ArrayList<>();
+
+        tagFiles.forEach(tag -> tags.add(tag.getName()));
+
+        InlineResponse2001 entity = new InlineResponse2001()
+                                            .name(name)
+                                            .tags(tags);
+
+        return Response.ok().entity(entity).build();
+//        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
     }
     
 }

@@ -22,6 +22,7 @@ import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.*;
@@ -213,7 +214,7 @@ public class NameApi  {
     }
     @GET
     @Path("/tags/list")
-    
+    @Produces( { MediaType.APPLICATION_JSON })
     
     @io.swagger.annotations.ApiOperation(value = "", notes = "Fetch the tags under the repository identified by 'name'", response = InlineResponse2001.class, tags={  })
     @io.swagger.annotations.ApiResponses(value = { 

@@ -1,8 +1,12 @@
 package org.eclipse.dockerregistry.storage;
 
+import org.eclipse.dockerregistry.utils.Endpoint;
+
+import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -19,30 +23,13 @@ public interface StorageDriver {
     String getName();
 
     /**
-     * This method is used to retrieve the content stored at the path specified by the path parameter
-     * as a byte array. Suitable for smaller files.
-     * @param path
-     * @return byte[] The content at the specified path as a byte array.
-     */
-    byte[] getContent(String path);
-
-    /**
-     * This method stores the content in the byte array at the specified path. Suitable for
-     * smaller files.
-     * @param path Destination path
-     * @param content Content to be stored at the destination path
-     * @return boolean Returns true if the file was stored successfully.
-     */
-    boolean putContent(String path, byte[] content);
-
-    /**
      * This method retrieves an InputStream for the file specified by the path parameter. The offset
      * can be used as a means of resuming a stream reading.
      * @param path Path of the file to be read
      * @param offset Starting point to read the file
      * @return InputStream Returns an InputStream for the specified file, if it is present.
      */
-    InputStream getInputStream(String path, long offset);
+    InputStream getInputStream(Path path, long offset);
 
     /**
      * This method returns a FileWriter to write data to the file specified by the path parameter.
@@ -50,21 +37,22 @@ public interface StorageDriver {
      * @param append Pass 'true' if the data needs to be appended to the specified file
      * @return FileWriter
      */
-    FileWriter getWriter(String path, boolean append);
+    FileWriter getWriter(Path path, boolean append);
 
     /**
      * This method returns a FileInfo object containing data about the file specified by the path parameter.
      * @param path Path of the file
      * @return FileInfo
      */
-    FileInfo getStats(String path);
+    FileInfo getStats(Path path);
 
     /**
      * This method returns a list of direct descendants of the path specified by the path parameter.
-     * @param path Path of the file
-     * @return List<String> A list of direct descendants
+     *
+     * @param endpoint @return List<Path> A list of direct descendants
+     * @param parameters
      */
-    List<String> getDirectDescendants(String path);
+    List<File> getDirectDescendants(Endpoint endpoint, String... parameters);
 
     /**
      * This method copies the file at sourcePath to the path specified by the destinationPath. The original file
@@ -73,14 +61,14 @@ public interface StorageDriver {
      * @param destinationPath Destination path of the source file
      * @return boolean Returns true if the file was moved successfully.
      */
-    boolean move(String sourcePath, String destinationPath);
+    boolean move(Path sourcePath, Path destinationPath);
 
     /**
      * This method deletes the file specified by the path parameter.
      * @param path File to be deleted
      * @return boolean Returns true if the file was successfully deleted.
      */
-    boolean delete(String path);
+    boolean delete(Path path);
 
     /**
      * This method returns a URL the file specified by the path parameter. This URL can be used to
@@ -89,5 +77,5 @@ public interface StorageDriver {
      * @param options Optional set of options according to which the URL should be created
      * @return URL Returns a URL object
      */
-    URL urlFor(String path, Map<String, String> options);
+    URL urlFor(Path path, Map<String, String> options);
 }

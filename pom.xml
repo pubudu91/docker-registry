@@ -81,6 +81,14 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
@@ -157,6 +165,31 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+      <!--<artifactId>jackson-core</artifactId>-->
+      <!--<version>2.7.4</version>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+      <!--<artifactId>jackson-databind</artifactId>-->
+      <!--<version>2.7.4</version>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+      <!--<artifactId>jackson-annotations</artifactId>-->
+      <!--<version>2.7.4</version>-->
+    <!--</dependency>-->
+      <!--<dependency>-->
+          <!--<groupId>com.fasterxml.jackson.module</groupId>-->
+          <!--<artifactId>jackson-module-jaxb-annotations</artifactId>-->
+          <!--<version>2.7.4</version>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+          <!--<groupId>com.fasterxml.jackson.jaxrs</groupId>-->
+          <!--<artifactId>jackson-jaxrs-json-provider</artifactId>-->
+          <!--<version>2.7.4</version>-->
+      <!--</dependency>-->
   </dependencies>
   <repositories>
     <repository>
@@ -170,7 +203,7 @@
   <properties>
     <swagger-core-version>1.5.8</swagger-core-version>
     <jetty-version>9.2.9.v20150224</jetty-version>
-    <jersey-version>1.18.1</jersey-version>
+    <jersey-version>1.19.1</jersey-version>
     <slf4j-version>1.6.3</slf4j-version>
     <junit-version>4.8.1</junit-version>
     <servlet-api-version>2.5</servlet-api-version>
