@@ -103,7 +103,6 @@ public class NameApiServiceImpl extends NameApiService {
                                             .tags(tags);
 
         return Response.ok().entity(entity).build();
-//        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
     }
     
 }
