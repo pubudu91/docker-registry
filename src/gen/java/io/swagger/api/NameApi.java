@@ -37,7 +37,7 @@ public class NameApi  {
 
     @GET
     @Path("/blobs/{digest}")
-    
+    @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM })
     
     @io.swagger.annotations.ApiOperation(value = "", notes = "Retrieve the blob from the registry identified by digest.", response = byte[].class, tags={  })
     @io.swagger.annotations.ApiResponses(value = { 

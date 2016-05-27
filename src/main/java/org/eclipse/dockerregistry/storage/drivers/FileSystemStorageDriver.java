@@ -2,16 +2,12 @@ package org.eclipse.dockerregistry.storage.drivers;
 
 import org.eclipse.dockerregistry.storage.FileInfo;
 import org.eclipse.dockerregistry.storage.StorageDriver;
-import org.eclipse.dockerregistry.utils.Endpoint;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -26,11 +22,14 @@ public class FileSystemStorageDriver implements StorageDriver {
     private final Path registryRoot; // Represents the root directory of the Registry storage
     private final Path blobs; // Represents the <registryRoot>/blobs directory
     private final Path repositories; // Represents the <registryRoot>/repositories directory
+    private FileSystemPathBuilder pathBuilder;
 
     private FileSystemStorageDriver() {
         registryRoot = Paths.get(rootPath);
         blobs = Paths.get(rootPath, "blobs");
         repositories = Paths.get(rootPath, "repositories");
+        pathBuilder = new FileSystemPathBuilder(registryRoot, blobs, repositories);
+        //TODO: Create the storage layout on disk
     }
 
     public static FileSystemStorageDriver getInstance() {
@@ -41,8 +40,49 @@ public class FileSystemStorageDriver implements StorageDriver {
         return this.name;
     }
 
-    public InputStream getInputStream(Path path, long offset) {
+    @Override
+    public InputStream getInputStreamForManifest(String name, String reference) throws IOException {
 
+        return null;
+    }
+
+    @Override
+    public InputStream getInputStreamForBlob(String name, String digest) throws IOException {
+        Path repoPath = pathBuilder.getPathForLayer(name, digest);
+        File file = repoPath.toFile();
+
+        if (file.exists()) {
+            Path blobPath = pathBuilder.getPathForBlob(name, digest);
+            File blob = blobPath.toFile();
+
+            return new FileInputStream(blob);
+        }
+        else
+            throw new FileNotFoundException("Requested repository path not found: " + file);
+    }
+
+    @Override
+    public InputStream getInputStreamForBlobUpload(String name, String uuid) throws IOException {
+        return null;
+    }
+
+    @Override
+    public Writer getWriterForManifests(String name, String reference) {
+        return null;
+    }
+
+    @Override
+    public Writer getWriterForBlobPostUpload(String name, String digest) {
+        return null;
+    }
+
+    @Override
+    public Writer getWriterForBlobUploadUuid(String name, String uuid) {
+        return null;
+    }
+
+    @Override
+    public FileInfo getManifestStats(Path path) {
         return null;
     }
 
@@ -54,14 +94,15 @@ public class FileSystemStorageDriver implements StorageDriver {
         return null;
     }
 
-    public List<File> getDirectDescendants(Endpoint endpoint, String... parameters) {
-        switch (endpoint) {
-            case TagsList:
-                Path path = new FileSystemPathBuilder().getPathForTagsList(parameters[0]);
-                File[] tags = path.toFile().listFiles(File::isDirectory);
-                return Arrays.asList(tags);
+    public List<String> getTags(String name) {
+        Path path = pathBuilder.getPathForTagsList(name);
+        File[] tagFiles = path.toFile().listFiles(File::isDirectory);
+        List<String> tags = new ArrayList<>();
+
+        for (File tagFile : tagFiles) {
+            tags.add(tagFile.getName());
         }
-        return null;
+        return tags;
     }
 
     public boolean move(Path sourcePath, Path destinationPath) {
@@ -70,6 +111,12 @@ public class FileSystemStorageDriver implements StorageDriver {
 
     public boolean delete(Path path) {
         return false;
+    }
+
+    @Override
+    public boolean repositoryExists(String name) {
+        Path path = Paths.get(repositories.toString(), name);
+        return path.toFile().exists();
     }
 
     public URL urlFor(Path path, Map<String, String> options) {

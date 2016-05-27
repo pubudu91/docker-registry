@@ -1,10 +1,8 @@
 package org.eclipse.dockerregistry.storage;
 
-import org.eclipse.dockerregistry.utils.Endpoint;
-
-import java.io.File;
-import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
@@ -29,7 +27,13 @@ public interface StorageDriver {
      * @param offset Starting point to read the file
      * @return InputStream Returns an InputStream for the specified file, if it is present.
      */
-    InputStream getInputStream(Path path, long offset);
+//    InputStream getInputStream(Path path, long offset);
+
+    InputStream getInputStreamForManifest(String name, String reference) throws IOException;
+
+    InputStream getInputStreamForBlob(String name, String digest) throws IOException;
+
+    InputStream getInputStreamForBlobUpload(String name, String uuid) throws IOException;
 
     /**
      * This method returns a FileWriter to write data to the file specified by the path parameter.
@@ -37,22 +41,26 @@ public interface StorageDriver {
      * @param append Pass 'true' if the data needs to be appended to the specified file
      * @return FileWriter
      */
-    FileWriter getWriter(Path path, boolean append);
+    Writer getWriterForManifests(String name, String reference);
+
+    Writer getWriterForBlobPostUpload(String name, String digest);
+
+    Writer getWriterForBlobUploadUuid(String name, String uuid);
+
 
     /**
      * This method returns a FileInfo object containing data about the file specified by the path parameter.
      * @param path Path of the file
      * @return FileInfo
      */
-    FileInfo getStats(Path path);
+    FileInfo getManifestStats(Path path);
 
     /**
      * This method returns a list of direct descendants of the path specified by the path parameter.
-     *
-     * @param endpoint @return List<Path> A list of direct descendants
-     * @param parameters
+     *  @return List<Path> A list of direct descendants
+     * @param name
      */
-    List<File> getDirectDescendants(Endpoint endpoint, String... parameters);
+    List<String> getTags(String name);
 
     /**
      * This method copies the file at sourcePath to the path specified by the destinationPath. The original file
@@ -69,6 +77,8 @@ public interface StorageDriver {
      * @return boolean Returns true if the file was successfully deleted.
      */
     boolean delete(Path path);
+
+    boolean repositoryExists(String name);
 
     /**
      * This method returns a URL the file specified by the path parameter. This URL can be used to
