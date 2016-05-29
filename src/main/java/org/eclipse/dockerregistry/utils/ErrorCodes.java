@@ -14,7 +14,7 @@ public class ErrorCodes {
     public static final String BLOB_UNKNOWN = "BLOB_UNKNOWN";
     public static final String BLOB_UPLOAD_UNKNOWN = "BLOB_UPLOAD_UNKNOWN";
     public static final String BLOB_UPLOAD_INVALID = "BLOB_UPLOAD_INVALID";
-
+    public static final String NAME_INVALID = "NAME_INVALID";
     private ErrorCodes() {}
 }
 

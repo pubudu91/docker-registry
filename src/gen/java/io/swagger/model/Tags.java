@@ -2,7 +2,6 @@ package io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
 
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2016-05-24T22:16:54.859+05:30")
-public class InlineResponse2001   {
+public class Tags {
   
   private String name = null;
   private List<String> tags = new ArrayList<String>();
@@ -20,7 +19,7 @@ public class InlineResponse2001   {
   
   /**
    **/
-  public InlineResponse2001 name(String name) {
+  public Tags name(String name) {
     this.name = name;
     return this;
   }
@@ -38,7 +37,7 @@ public class InlineResponse2001   {
   
   /**
    **/
-  public InlineResponse2001 tags(List<String> tags) {
+  public Tags tags(List<String> tags) {
     this.tags = tags;
     return this;
   }
@@ -63,9 +62,9 @@ public class InlineResponse2001   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    InlineResponse2001 inlineResponse2001 = (InlineResponse2001) o;
-    return Objects.equals(name, inlineResponse2001.name) &&
-        Objects.equals(tags, inlineResponse2001.tags);
+    Tags tags = (Tags) o;
+    return Objects.equals(name, tags.name) &&
+        Objects.equals(this.tags, tags.tags);
   }
 
   @Override
@@ -76,7 +75,7 @@ public class InlineResponse2001   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class InlineResponse2001 {\n");
+    sb.append("class Tags {\n");
     
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    tags: ").append(toIndentedString(tags)).append("\n");

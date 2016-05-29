@@ -19,8 +19,12 @@ public class FileSystemPathBuilder {
         this.repositories = repositories;
     }
 
-    public Path getPathForManifests(String name, String reference) {
-        return Paths.get(repositories.toString(), name, "manifests/revisions/sha256", reference);
+    public Path getPathForManifest(String name, String digest) {
+        return Paths.get(repositories.toString(), name, "manifests/revisions/sha256", digest);
+    }
+
+    public Path getPathForManifestByTag(String name, String tag) {
+        return Paths.get(repositories.toString(), name, "manifests/tags", tag, "current/link");
     }
 
     public Path getPathForLayer(String name, String digest) {
@@ -28,15 +32,10 @@ public class FileSystemPathBuilder {
     }
 
     public Path getPathForBlob(String name, String digest) {
-        return Paths.get(blobs.toString(), "sha256", digest.substring(0,2), digest, "data");
+        return Paths.get(blobs.toString(), "sha256", digest.substring(0, 2), digest, "data");
     }
 
     public Path getPathForTagsList(String name) {
         return Paths.get(repositories.toString(), name, "manifests/tags");
-    }
-
-    private boolean isValidNamespace(String path) {
-        Pattern pattern = Pattern.compile("^(/[A-Za-z0-9._-]+)+$");
-        return pattern.matcher(path).matches();
     }
 }

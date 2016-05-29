@@ -42,8 +42,27 @@ public class FileSystemStorageDriver implements StorageDriver {
 
     @Override
     public InputStream getInputStreamForManifest(String name, String reference) throws IOException {
+        Path manifestPath = pathBuilder.getPathForManifest(name, reference);
+        File manifestFile = manifestPath.toFile();
 
-        return null;
+        if (manifestFile.exists() && reference.length() == 64) {
+            Path manifestBlobPath = pathBuilder.getPathForBlob(name, reference);
+            File manifestBlob = manifestBlobPath.toFile();
+            return new FileInputStream(manifestBlob);
+        }
+
+        manifestPath = pathBuilder.getPathForManifestByTag(name, reference);
+        manifestFile = manifestPath.toFile();
+
+        if (manifestFile.exists()) {
+            BufferedReader fileStream = new BufferedReader(new FileReader(manifestFile));
+            String digest = fileStream.readLine().split(":")[1];
+
+            Path manifestBlobPath = pathBuilder.getPathForBlob(name, digest);
+            File manifestBlob = manifestBlobPath.toFile();
+            return new FileInputStream(manifestBlob);
+        } else
+            throw new FileNotFoundException("Requested repository path not found: " + manifestFile);
     }
 
     @Override
@@ -56,8 +75,7 @@ public class FileSystemStorageDriver implements StorageDriver {
             File blob = blobPath.toFile();
 
             return new FileInputStream(blob);
-        }
-        else
+        } else
             throw new FileNotFoundException("Requested repository path not found: " + file);
     }
 

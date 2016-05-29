@@ -1,25 +1,12 @@
 package io.swagger.api;
 
 import io.swagger.jaxrs.PATCH;
-import io.swagger.model.*;
-import io.swagger.api.NameApiService;
 import io.swagger.api.factories.NameApiServiceFactory;
 
 import io.swagger.annotations.ApiParam;
 
-import com.sun.jersey.multipart.FormDataParam;
-
-import io.swagger.model.InlineResponse401;
 import io.swagger.model.InlineResponse200;
-import io.swagger.model.InlineResponse2001;
-
-import java.util.List;
-import io.swagger.api.NotFoundException;
-
-import java.io.InputStream;
-
-import com.sun.jersey.core.header.FormDataContentDisposition;
-import com.sun.jersey.multipart.FormDataParam;
+import io.swagger.model.Tags;
 
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -36,7 +23,7 @@ public class NameApi  {
    private final NameApiService delegate = NameApiServiceFactory.getNameApi();
 
     @GET
-    @Path("/blobs/{digest}")
+    @Path("/blobs/{digest: (/?[A-Za-z0-9._-]+/?)+}")
     @Produces( { MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM })
     
     @io.swagger.annotations.ApiOperation(value = "", notes = "Retrieve the blob from the registry identified by digest.", response = byte[].class, tags={  })
@@ -57,7 +44,6 @@ public class NameApi  {
     }
     @HEAD
     @Path("/blobs/{digest}")
-    
     
     @io.swagger.annotations.ApiOperation(value = "", notes = "Same as GET, except only the headers are returned.", response = void.class, tags={  })
     @io.swagger.annotations.ApiResponses(value = { 
@@ -181,7 +167,7 @@ public class NameApi  {
     }
     @GET
     @Path("/manifests/{reference}")
-    
+    @Produces({ MediaType.APPLICATION_JSON })
     
     @io.swagger.annotations.ApiOperation(value = "", notes = "Pulls the image manifest file associated with the specified name and reference. Reference may be a tag or a digest", response = InlineResponse200.class, tags={  })
     @io.swagger.annotations.ApiResponses(value = { 
@@ -216,11 +202,11 @@ public class NameApi  {
     @Path("/tags/list")
     @Produces( { MediaType.APPLICATION_JSON })
     
-    @io.swagger.annotations.ApiOperation(value = "", notes = "Fetch the tags under the repository identified by 'name'", response = InlineResponse2001.class, tags={  })
+    @io.swagger.annotations.ApiOperation(value = "", notes = "Fetch the tags under the repository identified by 'name'", response = Tags.class, tags={  })
     @io.swagger.annotations.ApiResponses(value = { 
-        @io.swagger.annotations.ApiResponse(code = 200, message = "Gives a list of tags for the names repository.", response = InlineResponse2001.class),
-        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized access", response = InlineResponse2001.class),
-        @io.swagger.annotations.ApiResponse(code = 404, message = "The named manifest could not be found in the Registry", response = InlineResponse2001.class) })
+        @io.swagger.annotations.ApiResponse(code = 200, message = "Gives a list of tags for the names repository.", response = Tags.class),
+        @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized access", response = Tags.class),
+        @io.swagger.annotations.ApiResponse(code = 404, message = "The named manifest could not be found in the Registry", response = Tags.class) })
     public Response nameTagsListGet(
         @ApiParam(value = "Name of the image (including the namespace)",required=true) @PathParam("name") String name,
         @Context SecurityContext securityContext)
