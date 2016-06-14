@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.*;
+import java.io.InputStream;
 
 @Path("/{name}")
 
@@ -70,7 +71,7 @@ public class NameApi  {
     }
     @POST
     @Path("/blobs/uploads")
-    
+    @Consumes( { MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_OCTET_STREAM })
     
     @io.swagger.annotations.ApiOperation(value = "", notes = "Upload a blob identified by the digest parameter in single request. This upload will not be resumable unless a recoverable error is returned.", response = void.class, tags={  })
     @io.swagger.annotations.ApiResponses(value = { 
@@ -81,9 +82,14 @@ public class NameApi  {
         @io.swagger.annotations.ApiResponse(code = 400, message = "On failure", response = void.class),
         
         @io.swagger.annotations.ApiResponse(code = 401, message = "Unauthorized access", response = void.class) })
-    public Response nameBlobsUploadsPost(@ApiParam(value = "Name of the image (including the namespace)",required=true) @PathParam("name") String name,@ApiParam(value = "Digest of uploaded blob. If present, the upload will be completed, in a single request, with contents of the request body as the resulting blob.") @QueryParam("digest") String digest,@Context SecurityContext securityContext)
+    public Response nameBlobsUploadsPost(
+            @ApiParam(value = "Name of the image (including the namespace)", required = true) @PathParam("name") String name,
+            @ApiParam(value = "Digest of uploaded blob. If present, the upload will be completed, in a single request, with contents of the request body as the resulting blob.") @QueryParam("digest") String digest,
+            @Context SecurityContext securityContext,
+            InputStream inputStream)
+//            @FormDataParam("file") FormDataContentDisposition contentDispositionHeader)
     throws NotFoundException {
-        return delegate.nameBlobsUploadsPost(name,digest,securityContext);
+        return delegate.nameBlobsUploadsPost(name,digest,inputStream, securityContext);
     }
     @DELETE
     @Path("/blobs/uploads/{uuid}")

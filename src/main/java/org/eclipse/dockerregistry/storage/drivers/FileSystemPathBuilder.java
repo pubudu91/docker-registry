@@ -1,5 +1,7 @@
 package org.eclipse.dockerregistry.storage.drivers;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -28,6 +30,15 @@ public class FileSystemPathBuilder {
 
     public Path getPathForLayer(String name, String digest) {
         return Paths.get(repositories.toString(), name, "layers/sha256", digest);
+    }
+
+    public Path createPathForBlob(String name, String digest) throws IOException {
+        Path path = Paths.get(blobs.toString(), "sha256", digest.substring(0, 2), digest);
+
+        if (Files.exists(path))
+            return Paths.get(path.toString(), "data");
+        else
+            return Paths.get(Files.createDirectories(path).toString(), "data");
     }
 
     public Path getPathForBlob(String name, String digest) {

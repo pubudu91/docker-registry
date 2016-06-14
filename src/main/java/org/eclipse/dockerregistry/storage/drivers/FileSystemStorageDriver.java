@@ -90,8 +90,9 @@ public class FileSystemStorageDriver implements StorageDriver {
     }
 
     @Override
-    public Writer getWriterForBlobPostUpload(String name, String digest) {
-        return null;
+    public OutputStream getOutputStreamForBlobPostUpload(String name, String digest) throws IOException {
+        OutputStream out = new FileOutputStream(pathBuilder.createPathForBlob(name, digest).toString());
+        return out;
     }
 
     @Override

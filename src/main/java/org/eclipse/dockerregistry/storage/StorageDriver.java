@@ -1,8 +1,6 @@
 package org.eclipse.dockerregistry.storage;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
@@ -43,7 +41,7 @@ public interface StorageDriver {
      */
     Writer getWriterForManifests(String name, String reference);
 
-    Writer getWriterForBlobPostUpload(String name, String digest);
+    OutputStream getOutputStreamForBlobPostUpload(String name, String digest) throws IOException;
 
     Writer getWriterForBlobUploadUuid(String name, String uuid);
 

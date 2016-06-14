@@ -12,7 +12,6 @@ import org.eclipse.packagedrone.dockerregistry.models.Error;
 import org.eclipse.packagedrone.dockerregistry.models.Tags;
 
 import java.io.*;
-import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
@@ -95,10 +94,21 @@ public class NameApiServiceImpl extends NameApiService {
     }*/
 
     @Override
-    public Response nameBlobsUploadsPost(String name, String digest, SecurityContext securityContext)
+    public Response nameBlobsUploadsPost(String name, String digest, InputStream inputStream, SecurityContext securityContext)
             throws NotFoundException {
-        // do some magic!
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
+        StorageDriver driver = FileSystemStorageDriver.getInstance();
+
+        if (digest != null) {
+            try {
+                OutputStream out = driver.getOutputStreamForBlobPostUpload(name, digest);
+                writeToStream(inputStream, out);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            }
+        }
+        
+        return Response.ok().header("Upload", "success").build();
     }
 
     @Override
@@ -214,6 +224,17 @@ public class NameApiServiceImpl extends NameApiService {
             output.write(buffer, 0, bytesRead);
 
         return output.toString();
+    }
+
+    private void writeToStream(InputStream inputStream, OutputStream outputStream) throws IOException {
+        int bytesRead = 0;
+        byte[] bytes = new byte[1024];
+
+        while ((bytesRead = inputStream.read(bytes)) != -1) {
+            outputStream.write(bytes, 0, bytesRead);
+        }
+        outputStream.flush();
+        outputStream.close();
     }
 
     private String cleanupString(String str) {

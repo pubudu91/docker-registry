@@ -11,21 +11,21 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
 public class Bootstrap extends HttpServlet {
-  @Override
-  public void init(ServletConfig config) throws ServletException {
-    Info info = new Info()
-      .title("Docker Registry HTTP API v2")
-      .description("")
-      .termsOfService("")
-      .contact(new Contact()
-        .email(""))
-      .license(new License()
-        .name("")
-        .url(""));
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        Info info = new Info()
+                .title("Docker Registry HTTP API v2")
+                .description("")
+                .termsOfService("")
+                .contact(new Contact()
+                        .email(""))
+                .license(new License()
+                        .name("")
+                        .url(""));
 
-    ServletContext context = config.getServletContext();
-    Swagger swagger = new Swagger().info(info);
+        ServletContext context = config.getServletContext();
+        Swagger swagger = new Swagger().info(info);
 
-    new SwaggerContextService().withServletConfig(config).updateSwagger(swagger);
-  }
+        new SwaggerContextService().withServletConfig(config).updateSwagger(swagger);
+    }
 }
